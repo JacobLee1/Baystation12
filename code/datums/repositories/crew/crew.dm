@@ -52,7 +52,18 @@ var/global/datum/repository/crew/crew_repository = new()
 				var/mob/living/carbon/human/H = C.loc
 				if(H.w_uniform != C)
 					continue
-				var/list/crewmemberData = list("sensor_type" = C.sensor_mode, "dead"=0, "oxy"=-1, "tox"=-1, "fire"=-1, "brute"=-1, "area"="", "x"=-1, "y"=-1, "z"=-1, "ref" = "\ref[H]")
+				var/pressure = "[Floor(120*(H.get_effective_blood_volume()/100))]/[Floor(80*(H.get_effective_blood_volume()/100))]"
+				var/blood_result = H.get_effective_blood_volume()
+				if(blood_result > 110)
+					blood_result = "elevated"
+				else if(blood_result < 90)
+					blood_result = "low"
+				else if(blood_result < 60)
+					blood_result = "extremely low"
+				else
+					blood_result = "normal"
+				pressure += " ([blood_result])"
+				var/list/crewmemberData = list("sensor_type" = C.sensor_mode, "stat"= H.stat, "pulse"= H.get_pulse(1), "pressure"= pressure, "bodytemp" = H.bodytemperature - T0C, "area"="", "x"=-1, "y"=-1, "z"=-1, "ref" = "\ref[H]")
 				if(!(run_queues(H, C, pos, crewmemberData) & MOD_SUIT_SENSORS_REJECTED))
 					crewmembers[++crewmembers.len] = crewmemberData
 

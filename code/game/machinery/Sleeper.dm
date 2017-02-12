@@ -62,22 +62,11 @@
 	data["reagents"] = reagents.Copy()
 
 	if(occupant)
-		data["occupant"] = 1
-		switch(occupant.stat)
-			if(CONSCIOUS)
-				data["stat"] = "Conscious"
-			if(UNCONSCIOUS)
-				data["stat"] = "Unconscious"
-			if(DEAD)
-				data["stat"] = "<font color='red'>Dead</font>"
-		data["health"] = occupant.health
-		if(ishuman(occupant))
-			var/mob/living/carbon/human/H = occupant
-			data["pulse"] = H.get_pulse(GETPULSE_TOOL)
-		data["brute"] = occupant.getBruteLoss()
-		data["burn"] = occupant.getFireLoss()
-		data["oxy"] = occupant.getOxyLoss()
-		data["tox"] = occupant.getToxLoss()
+		var/scan = medical_scan_results(occupant)
+		scan = replacetext(scan,"'notice'","'white'")
+		scan = replacetext(scan,"'warning'","'average'")
+		scan = replacetext(scan,"'danger'","'bad'")
+		data["occupant"] =scan
 	else
 		data["occupant"] = 0
 	if(beaker)

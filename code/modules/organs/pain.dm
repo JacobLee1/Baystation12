@@ -7,12 +7,12 @@ mob/var/next_pain_time = 0
 // message is the custom message to be displayed
 // power decides how much painkillers will stop the message
 // force means it ignores anti-spam timer
-mob/living/carbon/proc/custom_pain(var/message, var/power, var/force, var/obj/item/organ/external/affecting)
+mob/living/carbon/proc/custom_pain(var/message, var/power, var/force, var/obj/item/organ/external/affecting, var/nohalloss)
 	if(!message || stat || !can_feel_pain() || chem_effects[CE_PAINKILLER] > power)
 		return 0
 
 	// Excessive halloss is horrible, just give them enough to make it visible.
-	if(power)
+	if(!nohalloss && power)
 		if(affecting)
 			affecting.add_pain(ceil(power/2))
 		else

@@ -26,7 +26,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 40
 
 /obj/item/organ/internal/heart/process()
 	if(owner)
-		handle_pulse()
+		if(owner.life_tick % 5 == 0)//update pulse every 5 life ticks (~1 tick/sec, depending on server load)
+			handle_pulse()
 		if(pulse)
 			handle_heartbeat()
 		handle_blood()
@@ -36,17 +37,24 @@ var/const/BLOOD_VOLUME_SURVIVE = 40
 	if(owner.stat == DEAD || robotic >= ORGAN_ROBOT)
 		pulse = PULSE_NONE	//that's it, you're dead (or your metal heart is), nothing can influence your pulse
 		return
-	if(owner.life_tick % 5 == 0)//update pulse every 5 life ticks (~1 tick/sec, depending on server load)
+	var/real_blood_volume = round(owner.vessel.get_reagent_amount("blood")/owner.species.blood_volume * max(0.3, 1-damage/max_damage) * 100)
+	if(owner.shock_stage >= 120 || owner.getOxyLoss() >= 100 || real_blood_volume < BLOOD_VOLUME_SURVIVE) // The heart has stopped due to going into traumatic or cardiovascular shock.
+		if(pulse != PULSE_NONE)
+			to_chat(owner, "<span class='danger'>Your heart has stopped!</span>")
+			pulse = PULSE_NONE
+	else
 		pulse = PULSE_NORM
-
-		if(round(owner.vessel.get_reagent_amount("blood")) <= BLOOD_VOLUME_BAD)	//how much blood do we have
+		var/pulse_mod = owner.chem_effects[CE_PULSE]
+		if(owner.shock_stage > 30)
+			pulse_mod++
+		if(owner.get_effective_blood_volume() <= BLOOD_VOLUME_BAD)	//how much blood do we have
 			pulse  = PULSE_THREADY	//not enough :(
 
 		else if(owner.status_flags & FAKEDEATH || owner.chem_effects[CE_NOPULSE])
 			pulse = PULSE_NONE		//pretend that we're dead. unlike actual death, can be inflienced by meds
-			pulse = Clamp(pulse + owner.chem_effects[CE_PULSE], PULSE_NONE, PULSE_2FAST)
+			pulse = Clamp(pulse + pulse_mod, PULSE_NONE, PULSE_2FAST)
 		else
-			pulse = Clamp(pulse + owner.chem_effects[CE_PULSE], PULSE_SLOW, PULSE_2FAST)
+			pulse = Clamp(pulse + pulse_mod, PULSE_SLOW, PULSE_2FAST)
 
 /obj/item/organ/internal/heart/proc/handle_heartbeat()
 	if(pulse >= PULSE_2FAST || owner.shock_stage >= 10 || is_below_sound_pressure(get_turf(owner)))
@@ -131,3 +139,9 @@ var/const/BLOOD_VOLUME_SURVIVE = 40
 					owner.drip(blood_max, get_turf(owner))
 		else
 			owner.drip(blood_max)
+
+/obj/item/organ/internal/heart/proc/is_working()
+	if(!is_usable())
+		return FALSE
+
+	return pulse > PULSE_NONE || robotic == ORGAN_ROBOT || (owner.status_flags & FAKEDEATH)

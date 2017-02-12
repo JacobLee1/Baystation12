@@ -1539,3 +1539,18 @@
 
 		if((SKELETON in mutations) && (!w_uniform) && (!wear_suit))
 			play_xylophone()
+
+/mob/living/carbon/human/proc/resuscitate()
+	if(!is_asystole() || !should_have_organ(BP_HEART))
+		return
+	var/obj/item/organ/internal/heart/heart = internal_organs_by_name[BP_HEART]
+	if(istype(heart) && heart.robotic <= ORGAN_ROBOT && !(heart.status & ORGAN_DEAD))
+		visible_message("\The [src] jerks and gasps for breath!")
+		shock_stage = min(shock_stage, 100) // 120 is the point at which the heart stops.
+		if(getOxyLoss() >= 75)
+			setOxyLoss(75)
+		heart.handle_pulse()
+
+/mob/living/carbon/human/proc/make_adrenaline(amount)
+	if(stat == CONSCIOUS)
+		reagents.add_reagent("adrenaline", amount)

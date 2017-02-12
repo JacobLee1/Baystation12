@@ -750,7 +750,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	var/use_blood_colour = species.get_blood_colour(owner)
 
 	removed(null, ignore_children)
-	victim.traumatic_shock += 60
+	add_pain(60)
+	if(!clean)
+		victim.shock_stage += min_broken_damage
 
 	if(parent_organ)
 		var/datum/wound/lost_limb/W = new (src, disintegrate, clean)
@@ -1230,3 +1232,30 @@ Note that amputating the affected organ does in fact remove the infection from t
 				flavor_text += "a ton of [wound]\s"
 
 	return english_list(flavor_text)
+
+/obj/item/organ/external/get_scan_results()
+	. = ..()
+	if(status & ORGAN_ARTERY_CUT)
+		. += "[capitalize(artery_name)] ruptured"
+	if(status & ORGAN_TENDON_CUT)
+		. += "Severed [tendon_name]"
+	if(dislocated == 2) // non-magical constants when
+		. += "Dislocated"
+	if(splinted)
+		. += "Splinted"
+	if(status & ORGAN_BLEEDING)
+		. += "Bleeding"
+	if(status & ORGAN_BROKEN)
+		. += capitalize(broken_description)
+	if(open)
+		. += "Surgical incision"
+	if (implants.len)
+		var/unknown_body = 0
+		for(var/I in implants)
+			var/obj/item/weapon/implant/imp = I
+			if(istype(imp) && imp.known)
+				. += "[capitalize(imp.name)] implanted"
+			else
+				unknown_body++
+		if(unknown_body)
+			. += "Unknown body present"

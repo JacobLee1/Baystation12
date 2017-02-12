@@ -4,7 +4,7 @@
 
 /obj/item/organ/external/proc/is_damageable(var/additional_damage = 0)
 	//Continued damage to vital organs can kill you, and robot organs don't count towards total damage so no need to cap them.
-	return (vital || (robotic >= ORGAN_ROBOT) || brute_dam + burn_dam + additional_damage < max_damage)
+	return ((robotic >= ORGAN_ROBOT) || brute_dam + burn_dam + additional_damage < max_damage)
 
 /obj/item/organ/external/take_damage(brute, burn, damage_flags, used_weapon = null)
 	brute = round(brute * brute_mod, 0.1)
@@ -185,7 +185,7 @@
 	if(owner) owner.update_body()
 
 // Pain/halloss
-/obj/item/organ/external/proc/get_pain(var/amount)
+/obj/item/organ/external/proc/get_pain()
 	if(!can_feel_pain() || robotic >= ORGAN_ROBOT)
 		return 0
 	var/lasting_pain = 0
@@ -193,7 +193,7 @@
 		lasting_pain += 10
 	else if(is_dislocated())
 		lasting_pain += 5
-	return pain + lasting_pain
+	return pain + lasting_pain + 1.2 * brute_dam + 1.5 * burn_dam
 
 /obj/item/organ/external/proc/remove_pain(var/amount)
 	if(!can_feel_pain() || robotic >= ORGAN_ROBOT)
