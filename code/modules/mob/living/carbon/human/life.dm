@@ -305,7 +305,7 @@
 	else
 		failed_last_breath = L.handle_breath(breath) //if breath is null or vacuum, the lungs will handle it for us
 
-	if(failed_last_breath)
+	if(failed_last_breath && !isSynthetic())
 		if(prob(15))
 			if(is_asystole())
 				emote(pick("shiver","twitch"))
@@ -692,11 +692,13 @@
 					//Are they SSD? If so we'll keep them asleep but work off some of that sleep var in case of stoxin or similar.
 					if(client || sleeping > 3)
 						AdjustSleeping(-1)
-				if(prob(2) && health && !hal_crit && !failed_last_breath)
+				if(prob(2) && health && !hal_crit && !failed_last_breath && !isSynthetic())
 					if(!paralysis)
 						emote("snore")
 					else
 						emote("groan")
+			if(prob(2) && is_asystole() && isSynthetic())
+				visible_message(src, "<b>[src]</b> [pick("emits low pitched whirr","beeps urgently")]")
 		//CONSCIOUS
 		else
 			set_stat(CONSCIOUS)

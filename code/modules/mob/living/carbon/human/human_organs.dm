@@ -212,9 +212,8 @@
 /mob/living/carbon/human/is_asystole()
 	if(isSynthetic())
 		var/obj/item/organ/internal/cell/C = internal_organs_by_name[BP_CELL]
-		if(!istype(C))
-			if(C.get_charge() < 1)
-				world << "[src] is <b>C Y B E R A S Y S T O L E</b>"
+		if(istype(C))
+			if(!C.is_usable())
 				return TRUE
 	else if(should_have_organ(BP_HEART))
 		var/obj/item/organ/internal/heart/heart = internal_organs_by_name[BP_HEART]

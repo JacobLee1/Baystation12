@@ -6,10 +6,11 @@
 	organ_tag = BP_CELL
 	parent_organ = BP_CHEST
 	vital = 1
-	var/obj/item/weapon/cell/cell = /obj/item/weapon/cell/high
+	var/open
+	var/obj/item/weapon/cell/cell = /obj/item/weapon/cell/hyper
+	//at 0.8 completely depleted after 60ish minutes of constant walking or 130 minutes of standing still
+	var/servo_cost = 0.8
 
-	var/standing_cost = 20
-	var/moving_cost   = 50
 
 /obj/item/organ/internal/cell/New()
 	robotize()
@@ -43,14 +44,52 @@
 		return
 	if(owner.stat == DEAD)	//not a drain anymore
 		return
-	world << "[src] of [owner] is being processed: charge [percent()]%"
-	if(!owner.lying && !owner.buckled)
-		if(!use(standing_cost)) //standing is pain
+	if(!is_usable())
+		owner.Paralyse(3)
+		return
+	var/standing = !owner.lying && !owner.buckled //on the edge
+	var/drop
+	if(!check_charge(servo_cost)) //standing is pain
+		drop = 1
+	else if(standing)
+		use(servo_cost)
+		if(world.time - owner.l_move_time < 15) //so is
+			if(!use(servo_cost))
+				drop = 1
+	if(drop)
+		if(standing)
 			to_chat(owner, "<span class='warning'>You don't have enough energy to stand!</span>")
-			owner.Weaken(5)
-		if(world.time - l_move_time < 15) //so is moving
-			if(!use(moving_cost))
-				owner.Weaken(5)
+		owner.Weaken(2)
+
+/obj/item/organ/internal/cell/emp_act(severity)
+	..()
+	if(cell)
+		cell.emp_act(severity)
+
+/obj/item/organ/internal/cell/attackby(obj/item/weapon/W, mob/user)
+	if (istype(W, /obj/item/weapon/screwdriver))
+		if(open)
+			open = 0
+			to_chat(user, "<span class='notice'>You screw the battery panel in place.</span>")
+		else
+			open = 1
+			to_chat(user, "<span class='notice'>You unscrew the battery panel.</span>")
+
+	if (istype(W, /obj/item/weapon/crowbar))
+		if(open)
+			if(cell)
+				user.put_in_hands(cell)
+				to_chat(user, "<span class='notice'>You remove [cell] from [src].</span>")
+				cell = null
+
+	if (istype(W, /obj/item/weapon/cell))
+		if(open)
+			if(cell)
+				to_chat(user, "<span class ='warning'>There is a power cell already installed.</span>")
+			else
+				user.drop_from_inventory(W,src)
+				cell = W
+				to_chat(user, "You insert the power cell.</span>")
 
 /obj/item/organ/internal/cell/replaced()
 	..()
