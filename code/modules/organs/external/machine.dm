@@ -1,15 +1,56 @@
 /obj/item/organ/internal/cell
 	name = "microbattery"
 	desc = "A small, powerful cell for use in fully prosthetic bodies."
-	icon = 'icons/obj/power.dmi'
-	icon_state = "scell"
+	icon_state = "cell"
+	dead_icon = "cell_bork"
 	organ_tag = BP_CELL
 	parent_organ = BP_CHEST
 	vital = 1
+	var/obj/item/weapon/cell/cell = /obj/item/weapon/cell/high
+
+	var/standing_cost = 20
+	var/moving_cost   = 50
 
 /obj/item/organ/internal/cell/New()
 	robotize()
+	if(ispath(cell))
+		cell = new cell(src)
 	..()
+
+/obj/item/organ/internal/cell/proc/percent()
+	if(!cell)
+		return 0
+	return get_charge()/cell.maxcharge * 100
+
+/obj/item/organ/internal/cell/proc/get_charge()
+	if(!cell)
+		return 0
+	if(status & ORGAN_DEAD)
+		return 0
+	return round(cell.charge*(1 - damage/max_damage))
+
+/obj/item/organ/internal/cell/proc/check_charge(var/amount)
+	return get_charge() >= amount
+
+/obj/item/organ/internal/cell/proc/use(var/amount)
+	if(check_charge(amount))
+		cell.use(amount)
+		return 1
+
+/obj/item/organ/internal/cell/process()
+	..()
+	if(!owner)
+		return
+	if(owner.stat == DEAD)	//not a drain anymore
+		return
+	world << "[src] of [owner] is being processed: charge [percent()]%"
+	if(!owner.lying && !owner.buckled)
+		if(!use(standing_cost)) //standing is pain
+			to_chat(owner, "<span class='warning'>You don't have enough energy to stand!</span>")
+			owner.Weaken(5)
+		if(world.time - l_move_time < 15) //so is moving
+			if(!use(moving_cost))
+				owner.Weaken(5)
 
 /obj/item/organ/internal/cell/replaced()
 	..()

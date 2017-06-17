@@ -49,3 +49,5 @@
 	var/slurring = null		//Carbon
 
 	var/job = null//Living
+
+	var/obj/screen/cells = null

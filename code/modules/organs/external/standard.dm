@@ -22,6 +22,11 @@
 	encased = "ribcage"
 	artery_name = "aorta"
 
+/obj/item/organ/external/chest/robotize()
+	if(..())
+		// Give them a new cell.
+		owner.internal_organs_by_name["cell"] = new /obj/item/organ/internal/cell(owner,1)
+
 /obj/item/organ/external/get_scan_results()
 	. = ..()
 	var/obj/item/organ/internal/lungs/L = locate() in src
