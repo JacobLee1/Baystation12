@@ -60,7 +60,7 @@
 	if(prob(1))
 		H.emote(pick("scratch","jump","roll","tail"))
 
-	if(H.traumatic_shock && H.shock_stage < 40 && prob(3))
+	if(H.get_shock() && H.shock_stage < 40 && prob(3))
 		H.custom_emote("chimpers pitifully")
 
 	if(H.shock_stage > 10 && prob(3))
