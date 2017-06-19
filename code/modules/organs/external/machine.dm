@@ -79,7 +79,7 @@
 		if(open)
 			if(cell)
 				user.put_in_hands(cell)
-				to_chat(user, "<span class='notice'>You remove [cell] from [src].</span>")
+				to_chat(user, "<span class='notice'>You remove \the [cell] from \the [src].</span>")
 				cell = null
 
 	if (istype(W, /obj/item/weapon/cell))
@@ -89,7 +89,7 @@
 			else
 				user.drop_from_inventory(W,src)
 				cell = W
-				to_chat(user, "You insert the power cell.</span>")
+				to_chat(user, "<span class = 'notice'>You insert \the [cell].</span>")
 
 /obj/item/organ/internal/cell/replaced()
 	..()
