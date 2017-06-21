@@ -61,7 +61,7 @@
 
 	// Heal a bit if needed. This allows recovery from low amounts of toxloss.
 	if(damage < min_broken_damage)
-		damage = max(0, 0.1 * PROCESS_ACCURACY)
+		damage = max(0, damage - 0.1 * PROCESS_ACCURACY)
 
 	//Blood regeneration if there is some space
 	var/blood_volume_raw = owner.vessel.get_reagent_amount("blood")
