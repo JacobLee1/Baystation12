@@ -32,10 +32,13 @@
 	if(status_flags & GODMODE)	return 0	//godmode
 	if(should_have_organ(BP_BRAIN))
 		var/obj/item/organ/internal/brain/sponge = internal_organs_by_name[BP_BRAIN]
-		if(sponge && !(sponge.status & ORGAN_DEAD))
-			return sponge.damage
+		if(sponge)
+			if(sponge.status & ORGAN_DEAD)
+				return sponge.species.total_health
+			else
+				return sponge.damage
 		else
-			return sponge.species.total_health
+			return species.total_health
 	return 0
 
 /mob/living/carbon/human/getHalLoss()

@@ -301,6 +301,8 @@
 /obj/machinery/atmospherics/unary/cryo_cell/MouseDrop_T(var/mob/target, var/mob/user)
 	if(!CanMouseDrop(target, user))
 		return
+	if (!istype(target))
+		return
 	if (target.buckled)
 		to_chat(user, "<span class='warning'>Unbuckle the subject before attempting to move them.</span>")
 		return

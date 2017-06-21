@@ -19,14 +19,15 @@
 		if(target_organ && ishuman(M))
 			var/mob/living/carbon/human/H = M
 			var/obj/item/organ/internal/I = H.internal_organs_by_name[target_organ]
-			var/can_damage = I.max_damage - I.damage
-			if(can_damage > 0)
-				if(dam > can_damage)
-					I.take_damage(can_damage, silent=TRUE)
-					dam -= can_damage
-				else
-					I.take_damage(dam, silent=TRUE)
-					dam = 0
+			if(I)
+				var/can_damage = I.max_damage - I.damage
+				if(can_damage > 0)
+					if(dam > can_damage)
+						I.take_damage(can_damage, silent=TRUE)
+						dam -= can_damage
+					else
+						I.take_damage(dam, silent=TRUE)
+						dam = 0
 		if(dam)
 			M.adjustToxLoss(target_organ ? (dam * 0.75) : dam)
 

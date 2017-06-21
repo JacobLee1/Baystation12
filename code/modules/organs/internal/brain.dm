@@ -18,14 +18,6 @@
 	var/const/damage_threshold_count = 10
 	var/damage_threshold_value
 
-/obj/item/organ/internal/brain/New()
-	..()
-	max_damage = species.total_health
-	min_bruised_damage = max_damage*0.25
-	min_broken_damage = max_damage*0.75
-
-	damage_threshold_value = round(species.total_health / damage_threshold_count)
-
 /obj/item/organ/internal/brain/robotize()
 	replace_self_with(/obj/item/organ/internal/mmi_holder/posibrain)
 
@@ -50,8 +42,12 @@
 	icon_state = "brain-prosthetic"
 
 /obj/item/organ/internal/brain/New(var/mob/living/carbon/holder)
-	max_damage = holder.species.total_health
 	..()
+	max_damage = species.total_health
+	min_bruised_damage = max_damage*0.25
+	min_broken_damage = max_damage*0.75
+
+	damage_threshold_value = round(species.total_health / damage_threshold_count)
 	spawn(5)
 		if(brainmob && brainmob.client)
 			brainmob.client.screen.len = null //clear the hud
