@@ -36,7 +36,7 @@ Used In File(s): \code\game\machinery\computer\crew.dm
 
 			{{else value.sensor_type == 2}}
 
-				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">Blood Pressure</span> {{:value.pressure}} | <span class="white">Temperature</span> {{:value.bodytemp}} C | <span class="white">Location</span> <span class="neutral">Not Available</td>
+				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">BP</span> {{:value.pressure}} | <span class="white">Temp</span> {{:value.bodytemp}} C | <span class="white">Location</span> <span class="neutral">Not Available</td>
 	
 				{{if data.isAI}}
 					<td class='tracking'>{{:helper.link('Track', null, {}, 'disabled')}}</td>
@@ -44,7 +44,7 @@ Used In File(s): \code\game\machinery\computer\crew.dm
 			
 			{{else value.sensor_type == 3}}
 
-				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">Blood Pressure</span> {{:value.pressure}} | <span class="white">Temperature</span> {{:value.bodytemp}} C | <span class="white">Location</span> {{:value.area}} ({{:value.x}}, {{:value.y}}, {{:value.z}})</td>
+				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">BP</span> {{:value.pressure}} | <span class="white">Temp</span> {{:value.bodytemp}} C | <span class="white">Location</span> {{:value.area}} ({{:value.x}}, {{:value.y}}, {{:value.z}})</td>
 
 				{{if data.isAI}}
 					<td class='tracking'>{{:helper.link('Track', null, {'track' : value.ref})}}</td>
