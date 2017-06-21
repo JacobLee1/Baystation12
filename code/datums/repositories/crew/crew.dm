@@ -63,7 +63,24 @@ var/global/datum/repository/crew/crew_repository = new()
 				else
 					blood_result = "normal"
 				pressure += " ([blood_result])"
-				var/list/crewmemberData = list("sensor_type" = C.sensor_mode, "stat"= H.stat, "pulse"= H.get_pulse(1), "pressure"= pressure, "bodytemp" = H.bodytemperature - T0C, "area"="", "x"=-1, "y"=-1, "z"=-1, "ref" = "\ref[H]")
+				
+				var/true_pulse = H.pulse()
+				var/pulse_span = "good"
+				switch(true_pulse)
+					if(PULSE_NONE)
+						pulse_span = "bad"
+					if(PULSE_SLOW)
+						pulse_span = "highlight"
+					if(PULSE_NORM)
+						pulse_span = "good"
+					if(PULSE_FAST)
+						pulse_span = "average"
+					if(PULSE_2FAST)
+						pulse_span = "bad"
+					if(PULSE_THREADY)
+						pulse_span = "bad"
+
+				var/list/crewmemberData = list("sensor_type" = C.sensor_mode, "stat"= H.stat, "span" = pulse_span, "pulse"= H.get_pulse(1), "pressure"= pressure, "bodytemp" = H.bodytemperature - T0C, "area"="", "x"=-1, "y"=-1, "z"=-1, "ref" = "\ref[H]")
 				if(!(run_queues(H, C, pos, crewmemberData) & MOD_SUIT_SENSORS_REJECTED))
 					crewmembers[++crewmembers.len] = crewmemberData
 

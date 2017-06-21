@@ -20,7 +20,7 @@ Used In File(s): \code\game\machinery\computer\crew.dm
 <table class='wideTable'><tbody>
 	{{for data.crewmembers}}
 		<tr>
-			<td>{{:value.name}} ({{:value.assignment}})</td>
+			<td>{{:value.name}} ({{:value.assignment}}): </td>
 
 			{{if value.sensor_type == 1}}
 				
@@ -36,7 +36,7 @@ Used In File(s): \code\game\machinery\computer\crew.dm
 
 			{{else value.sensor_type == 2}}
 
-				<td><span class="average">Pulse</span> {{:value.pulse}} bpm | <span class="average">Blood Pressure</span> {{:value.pressure}} | <span class="average">Temperature</span> {{:value.bodytemp}} C | <span class="average">Location</span> <span class="neutral">Not Available</td>
+				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">Blood Pressure</span> {{:value.pressure}} | <span class="white">Temperature</span> {{:value.bodytemp}} C | <span class="white">Location</span> <span class="neutral">Not Available</td>
 	
 				{{if data.isAI}}
 					<td class='tracking'>{{:helper.link('Track', null, {}, 'disabled')}}</td>
@@ -44,7 +44,7 @@ Used In File(s): \code\game\machinery\computer\crew.dm
 			
 			{{else value.sensor_type == 3}}
 
-				<td><span class="average">Pulse</span> {{:value.pulse}} bpm | <span class="average">Blood Pressure</span> {{:value.pressure}} | <span class="average">Temperature</span> {{:value.bodytemp}} C | <span class="average">Location</span> {{:value.area}} ({{:value.x}}, {{:value.y}}, {{:value.z}})</td>
+				<td><span class="white">Pulse</span> <span class='{{:value.span}}'>{{:value.pulse}}</span> bpm | <span class="white">Blood Pressure</span> {{:value.pressure}} | <span class="white">Temperature</span> {{:value.bodytemp}} C | <span class="white">Location</span> {{:value.area}} ({{:value.x}}, {{:value.y}}, {{:value.z}})</td>
 
 				{{if data.isAI}}
 					<td class='tracking'>{{:helper.link('Track', null, {'track' : value.ref})}}</td>
