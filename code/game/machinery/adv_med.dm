@@ -319,7 +319,7 @@
 	dat += "<b>Systematic Organ Failure:</b>\t[get_severity(H.getToxLoss())]"
 	dat += "<b>Oxygen Deprivation:</b>\t[get_severity(H.getOxyLoss())]"
 
-	dat += "<b>Radiation Level:</b>\t[get_severity(H.radiation)]"
+	dat += "<b>Radiation Level:</b>\t[get_severity(H.radiation/5)]"
 	dat += "<b>Genetic Tissue Damage:</b>\t[get_severity(H.getCloneLoss())]"
 	if(H.paralysis)
 		dat += "Paralysis Summary: approx. [H.paralysis/4] seconds left"
