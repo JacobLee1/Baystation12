@@ -1247,8 +1247,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 		. += "Bleeding"
 	if(status & ORGAN_BROKEN)
 		. += capitalize(broken_description)
-	if(open)
-		. += "Surgical incision"
 	if (implants.len)
 		var/unknown_body = 0
 		for(var/I in implants)
