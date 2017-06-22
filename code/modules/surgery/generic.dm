@@ -58,7 +58,7 @@
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	user.visible_message("<span class='notice'>[user] has made a bloodless incision on [target]'s [affected.name] with \the [tool].</span>", \
 	"<span class='notice'>You have made a bloodless incision on [target]'s [affected.name] with \the [tool].</span>",)
-	var/datum/wound/W = affected.createwound(CUT, affected.min_broken_damage/2, 1)
+	affected.createwound(CUT, affected.min_broken_damage/2, 1)
 	affected.clamp()
 	spread_germs_to_organ(affected, user)
 
@@ -97,7 +97,7 @@
 	user.visible_message("<span class='notice'>[user] has constructed a prepared incision on and within [target]'s [affected.name] with \the [tool].</span>", \
 	"<span class='notice'>You have constructed a prepared incision on and within [target]'s [affected.name] with \the [tool].</span>",)
 
-	var/datum/wound/W = affected.createwound(CUT, affected.min_broken_damage/2, 1)
+	affected.createwound(CUT, affected.min_broken_damage/2, 1)
 	affected.clamp()
 
 /datum/surgery_step/generic/incision_manager/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
@@ -143,7 +143,7 @@
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	user.visible_message("<span class='notice'>[user] has made an incision on [target]'s [affected.name] with \the [tool].</span>", \
 	"<span class='notice'>You have made an incision on [target]'s [affected.name] with \the [tool].</span>",)
-	var/datum/wound/W = affected.createwound(CUT, affected.min_broken_damage/2, 1)
+	affected.createwound(CUT, affected.min_broken_damage/2, 1)
 	playsound(target.loc, 'sound/weapons/bladeslice.ogg', 15, 1)
 
 /datum/surgery_step/generic/cut_open/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
