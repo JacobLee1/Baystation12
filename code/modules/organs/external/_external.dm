@@ -892,6 +892,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 		W.clamped = 1
 	return rval
 
+/obj/item/organ/external/proc/clamped()
+	for(var/datum/wound/W in wounds)
+		if(W.clamped)
+			return 1
+
 /obj/item/organ/external/proc/fracture()
 	if(!config.bones_can_break)
 		return
@@ -1131,12 +1136,17 @@ Note that amputating the affected organ does in fact remove the infection from t
 	for(var/datum/wound/cut/W in wounds)
 		if(W.bandaged) // Shit's unusable
 			continue
-		if(W.autoheal_cutoff == 0) //Get nice and clean one
+		if(strict && !W.is_surgical()) //We don't need dirty ones
+			continue
+		if(!incision)
 			incision = W
-			break
-		if(!strict) //any hole will do
-			if(!incision || W.damage > incision.damage) //Failing that get biggest baddest cut
+			continue
+		var/same = W.is_surgical() == incision.is_surgical()
+		if(same) //If they're both dirty or both are surgical, just get bigger one
+			if(W.damage > incision.damage)
 				incision = W
+		else if(W.is_surgical()) //otherwise surgical one takes priority
+			incision = W
 	return incision
 
 /obj/item/organ/external/proc/open()
@@ -1144,11 +1154,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 	. = 0
 	if(!incision)
 		return 0
-	var/smol_threshold = min_broken_damage/5
-	var/beeg_threshold = min_broken_damage/2
+	var/smol_threshold = min_broken_damage * 0.4
+	var/beeg_threshold = min_broken_damage * 0.6
 	if(!incision.autoheal_cutoff == 0) //not clean incision
-		smol_threshold *= 2
-		beeg_threshold = max(beeg_threshold, min(beeg_threshold * 2, incision.damage_list[1])) //wounds can't achieve bigger
+		smol_threshold *= 1.5
+		beeg_threshold = max(beeg_threshold, min(beeg_threshold * 1.5, incision.damage_list[1])) //wounds can't achieve bigger
 	if(incision.damage >= smol_threshold) //smol incision
 		. = SURGERY_OPEN
 	if(incision.damage >= beeg_threshold) //beeg incision

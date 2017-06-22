@@ -180,3 +180,6 @@
 	if(bandaged || clamped)
 		return FALSE
 	return (bleed_timer > 0 && wound_damage() > bleed_threshold)
+
+/datum/wound/proc/is_surgical()
+	return 0
