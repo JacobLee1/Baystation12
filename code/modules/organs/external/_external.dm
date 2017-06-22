@@ -392,7 +392,7 @@ This function completely restores a damaged organ to perfect condition.
 		I.remove_rejuv()
 	..()
 
-/obj/item/organ/external/proc/createwound(var/type = CUT, var/damage)
+/obj/item/organ/external/proc/createwound(var/type = CUT, var/damage, var/surgical)
 
 	if(damage == 0)
 		return
@@ -400,7 +400,7 @@ This function completely restores a damaged organ to perfect condition.
 	//moved these before the open_wound check so that having many small wounds for example doesn't somehow protect you from taking internal damage (because of the return)
 	//Brute damage can possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
-	if((type in list(CUT, PIERCE, BRUISE)) && damage > 15 && local_damage > 30)
+	if(!surgical && (type in list(CUT, PIERCE, BRUISE)) && damage > 15 && local_damage > 30)
 
 		var/internal_damage
 		if(prob(damage) && sever_artery())
@@ -420,7 +420,7 @@ This function completely restores a damaged organ to perfect condition.
 		owner.remove_blood(fluid_loss)
 
 	// first check whether we can widen an existing wound
-	if(wounds.len > 0 && prob(max(50+(number_wounds-1)*10,90)))
+	if(!surgical && wounds.len > 0 && prob(max(50+(number_wounds-1)*10,90)))
 		if((type == CUT || type == BRUISE) && damage >= 5)
 			//we need to make sure that the wound we are going to worsen is compatible with the type of damage...
 			var/list/compatible_wounds = list()
@@ -449,13 +449,12 @@ This function completely restores a damaged organ to perfect condition.
 		var/datum/wound/W = new wound_type(damage)
 
 		//Check whether we can add the wound to an existing wound
-		for(var/datum/wound/other in wounds)
-			if(other.can_merge(W))
-				other.merge_wound(W)
-				W = null // to signify that the wound was added
-				break
-		if(W)
-			wounds += W
+		if(!surgical)
+			for(var/datum/wound/other in wounds)
+				if(other.can_merge(W))
+					other.merge_wound(W)
+					return
+		wounds += W
 		return W
 
 /****************************************************
@@ -1134,7 +1133,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/get_incision(var/strict)
 	var/datum/wound/cut/incision
 	for(var/datum/wound/cut/W in wounds)
-		if(W.bandaged) // Shit's unusable
+		if(W.bandaged || W.current_stage > W.max_bleeding_stage) // Shit's unusable
 			continue
 		if(strict && !W.is_surgical()) //We don't need dirty ones
 			continue

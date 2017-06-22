@@ -80,6 +80,7 @@
 	if (other.current_stage != src.current_stage) return 0
 	if (other.damage_type != src.damage_type) return 0
 	if (!(other.can_autoheal()) != !(src.can_autoheal())) return 0
+	if (other.is_surgical() != src.is_surgical()) return 0
 	if (!(other.bandaged) != !(src.bandaged)) return 0
 	if (!(other.clamped) != !(src.clamped)) return 0
 	if (!(other.salved) != !(src.salved)) return 0
