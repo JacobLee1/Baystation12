@@ -1554,3 +1554,8 @@
 /mob/living/carbon/human/proc/make_adrenaline(amount)
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
+
+//Get fluffy numbers
+/mob/living/carbon/human/proc/get_blood_pressure()
+	var/blood_result = H.get_effective_blood_volume()
+	return "[Floor((120+rand(-5,5))*(blood_result/100))]/[Floor(80+rand(-5,5)*(blood_result/100))"

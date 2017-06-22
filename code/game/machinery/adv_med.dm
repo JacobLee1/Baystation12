@@ -309,7 +309,7 @@
 	var/blood_result = H.get_effective_blood_volume()
 	if(blood_result <= 70)
 		. += "<span class='danger'>Severe blood loss detected.</span>"
-	. += "<b>Blood pressure:</b> [Floor(120*(blood_result/100))] over [Floor(80*(blood_result/100))] ([blood_result]% blood volume)"
+	. += "<b>Blood pressure:</b> [H.get_blood_pressure()] ([blood_result]% blood volume)"
 
 	// Body temperature.
 	. += "<b>Body temperature:</b> [H.bodytemperature-T0C]&deg;C ([H.bodytemperature*1.8-459.67]&deg;F)"

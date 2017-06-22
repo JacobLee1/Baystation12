@@ -52,7 +52,7 @@ var/global/datum/repository/crew/crew_repository = new()
 				var/mob/living/carbon/human/H = C.loc
 				if(H.w_uniform != C)
 					continue
-				var/pressure = "[Floor(120*(H.get_effective_blood_volume()/100))]/[Floor(80*(H.get_effective_blood_volume()/100))]"
+				var/pressure = H.get_blood_pressure()
 				var/blood_result = H.get_effective_blood_volume()
 				if(blood_result > 110)
 					blood_result = "elevated"
