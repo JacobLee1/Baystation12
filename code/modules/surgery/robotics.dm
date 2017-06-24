@@ -9,18 +9,14 @@
 /datum/surgery_step/robotics/
 	can_infect = 0
 /datum/surgery_step/robotics/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (isslime(target))
-		return 0
-	if (target_zone == BP_EYES)	//there are specific steps for eye surgery
-		return 0
-	if (!hasorgans(target))
+	if (!istype(target))
 		return 0
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	if (affected == null)
 		return 0
 	if (affected.status & ORGAN_CUT_AWAY)
 		return 0
-	if (!(affected.robotic >= ORGAN_ROBOT))
+	if (affected.robotic < ORGAN_ROBOT)
 		return 0
 	return 1
 
@@ -304,9 +300,10 @@
 
 /datum/surgery_step/robotics/detatch_organ_robotic/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	if(!(affected && (affected.robotic >= ORGAN_ROBOT)))
+	if(!..())
 		return 0
+
+	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	if(affected.hatch < 3)
 		return 0
 
@@ -324,7 +321,7 @@
 
 	target.op_stage.current_organ = organ_to_remove
 
-	return ..() && organ_to_remove
+	return 1
 
 /datum/surgery_step/robotics/detatch_organ_robotic/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 	user.visible_message("[user] starts to decouple [target]'s [target.op_stage.current_organ] with \the [tool].", \
@@ -346,7 +343,7 @@
 //////////////////////////////////////////////////////////////////
 //	robotic organ removal surgery step
 //////////////////////////////////////////////////////////////////
-/datum/surgery_step/internal/remove_organ_robotic
+/datum/surgery_step/robotics/remove_organ_robotic
 
 	allowed_tools = list(
 	/obj/item/weapon/hemostat = 100,	\
@@ -357,7 +354,7 @@
 	min_duration = 60
 	max_duration = 80
 
-/datum/surgery_step/internal/remove_organ_robotic/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+/datum/surgery_step/robotics/remove_organ_robotic/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
 	if (!..())
 		return 0
@@ -365,12 +362,8 @@
 	target.op_stage.current_organ = null
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	if(!affected)
+	if(affected.hatch < 3)
 		return 0
-
-	if(!(affected && (affected.robotic >= ORGAN_ROBOT)))
-		return 0
-
 	var/list/removable_organs = list()
 	for(var/obj/item/organ/internal/I in affected.implants)
 		if(I.status & ORGAN_CUT_AWAY)
@@ -381,14 +374,14 @@
 		return 0
 
 	target.op_stage.current_organ = organ_to_remove
-	return ..()
+	return 1
 
-/datum/surgery_step/internal/remove_organ_robotic/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+/datum/surgery_step/robotics/remove_organ_robotic/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 	user.visible_message("[user] starts removing [target]'s [target.op_stage.current_organ] with \the [tool].", \
 	"You start removing [target]'s [target.op_stage.current_organ] with \the [tool].")
 	..()
 
-/datum/surgery_step/internal/remove_organ_robotic/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+/datum/surgery_step/robotics/remove_organ_robotic/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 	user.visible_message("<span class='notice'>[user] has removed [target]'s [target.op_stage.current_organ] with \the [tool].</span>", \
 	"<span class='notice'>You have removed [target]'s [target.op_stage.current_organ] with \the [tool].</span>")
 
@@ -404,7 +397,7 @@
 		var/obj/item/organ/internal/mmi_holder/brain = O
 		brain.transfer_and_delete()
 
-/datum/surgery_step/internal/remove_organ_robotic/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+/datum/surgery_step/robotics/remove_organ_robotic/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	user.visible_message("<span class='warning'>[user]'s hand slips, damaging [target]'s [affected.name] with \the [tool]!</span>", \
 	"<span class='warning'>Your hand slips, damaging [target]'s [affected.name] with \the [tool]!</span>")
