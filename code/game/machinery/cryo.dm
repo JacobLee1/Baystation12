@@ -94,7 +94,18 @@
 	data["hasOccupant"] = occupant ? 1 : 0
 
 	if (occupant)
+		var/cloneloss = "none"
+		var/amount = occupant.getCloneLoss()
+		if(amount > 50)
+			cloneloss = "severe"
+		else if(amount > 25)
+			cloneloss = "significant"
+		else if(amount > 10)
+			cloneloss = "moderate"
+		else if(amount)
+			cloneloss = "minor"
 		var/scan = medical_scan_results(occupant)
+		scan += "<br><br>Genetic degradation: [cloneloss]"
 		scan = replacetext(scan,"'notice'","'white'")
 		scan = replacetext(scan,"'warning'","'average'")
 		scan = replacetext(scan,"'danger'","'bad'")
