@@ -170,10 +170,11 @@
 //	 Organ removal surgery step
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/internal/remove_organ
-
+	priority = 1
 	allowed_tools = list(
 	/obj/item/weapon/hemostat = 100,	\
-	/obj/item/weapon/wirecutters = 75,	\
+	/obj/item/weapon/wirecutters = 75,
+	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 20
 	)
 
