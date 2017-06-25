@@ -391,3 +391,7 @@
 
 /datum/species/proc/handle_death_check(var/mob/living/carbon/human/H)
 	return FALSE
+
+//Mostly for toasters
+/datum/species/proc/handle_limbs_setup(var/mob/living/carbon/human/H)
+	return FALSE

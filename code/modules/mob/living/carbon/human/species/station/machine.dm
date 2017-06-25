@@ -85,6 +85,9 @@
 /datum/species/machine/handle_post_spawn(var/mob/living/carbon/human/H)
 	if(!H)
 		return
+	handle_limbs_setup(H)
+
+/datum/species/machine/handle_limbs_setup(var/mob/living/carbon/human/H)
 	for(var/obj/item/organ/external/E in H.organs)
 		if(E.robotic < ORGAN_ROBOT)
 			E.robotize("Morpheus")
